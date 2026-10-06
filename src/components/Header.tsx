@@ -526,9 +526,9 @@ export default function Header({
               onClick={() => setIsMobileMenuOpen(false)}
             />
 
-            {/* Slide-out Drawer from Right (RTL Standard) */}
-            <div className="relative mr-auto w-[85%] max-w-sm h-full bg-slate-950 text-white shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-slate-800 z-10 transition-transform duration-300">
-              <div className="p-6">
+            {/* Slide-out Drawer from Right (RTL Standard Persian) */}
+            <div className="relative ml-auto w-[88%] max-w-sm h-full bg-slate-950 text-white shadow-2xl flex flex-col justify-between overflow-y-auto overflow-x-hidden border-r border-slate-800 z-10 transition-transform duration-300">
+              <div className="p-5 sm:p-6">
                 {/* Drawer Header */}
                 <div className="flex items-center justify-between pb-5 border-b border-slate-800">
                   <div className="flex items-center gap-2.5">
@@ -618,63 +618,73 @@ export default function Header({
                     </Link>
 
                     {/* Mobile Accordion Categories */}
-                    <div className="rounded-2xl bg-slate-900/90 border border-slate-800 overflow-hidden divide-y divide-slate-800/80 my-2">
-                      <div className="p-3 bg-slate-900 flex items-center justify-between">
+                    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden divide-y divide-slate-800/80 my-3 shadow-inner">
+                      <div className="p-3 bg-slate-900/90 flex items-center justify-between border-b border-slate-800">
                         <span className="text-xs font-black text-amber-400 flex items-center gap-2">
                           <Layers className="w-4 h-4 text-amber-500" />
-                          دسته‌بندی تجهیزات
+                          دسته‌بندی تجهیزات خودرو
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
                           {categories.length} شاخه
                         </span>
                       </div>
 
                       {categories.map((c) => {
                         const isExpanded = expandedMobileCategory === c.id;
+                        const hasChildren = c.children && c.children.length > 0;
                         return (
                           <div key={c.id} className="text-xs">
                             <button
                               type="button"
-                              onClick={() =>
-                                setExpandedMobileCategory(isExpanded ? null : c.id)
-                              }
-                              className={`w-full flex items-center justify-between p-3 transition-colors font-bold ${
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedMobileCategory(isExpanded ? null : c.id);
+                              }}
+                              className={`w-full flex items-center justify-between p-3.5 transition-all text-right font-bold cursor-pointer select-none active:scale-[0.99] ${
                                 isExpanded
-                                  ? "bg-amber-500/10 text-amber-400"
-                                  : "text-slate-300 hover:bg-slate-800"
+                                  ? "bg-amber-500/15 text-amber-400 border-r-4 border-amber-500"
+                                  : "text-slate-200 hover:bg-slate-850"
                               }`}
                             >
-                              <div className="flex items-center gap-2.5">
-                                <span className={isExpanded ? "text-amber-500" : "text-slate-400"}>
+                              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                <span className={`p-1 rounded-lg ${isExpanded ? "bg-amber-500/20 text-amber-400" : "bg-slate-800 text-slate-400"}`}>
                                   {getCategoryIcon(c.icon)}
                                 </span>
-                                <span>{c.nameFa}</span>
+                                <span className="truncate">{c.nameFa}</span>
                               </div>
-                              <ChevronDown
-                                className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                                  isExpanded ? "rotate-180 text-amber-500" : ""
-                                }`}
-                              />
+                              <div className="flex items-center gap-1.5 shrink-0 mr-2">
+                                {hasChildren && (
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+                                    {c.children.length}
+                                  </span>
+                                )}
+                                <ChevronDown
+                                  className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${
+                                    isExpanded ? "rotate-180 text-amber-500" : ""
+                                  }`}
+                                />
+                              </div>
                             </button>
 
                             {isExpanded && (
-                              <div className="p-2 bg-slate-950 space-y-1 border-t border-slate-800">
+                              <div className="p-2.5 bg-slate-950 space-y-1.5 border-t border-slate-800/80 animate-in fade-in slide-in-from-top-1 duration-200">
                                 <Link
                                   href={`/products?category=${c.slug}`}
                                   onClick={() => setIsMobileMenuOpen(false)}
-                                  className="block p-2 rounded-xl bg-amber-500/10 text-amber-400 font-bold text-xs"
+                                  className="flex items-center justify-between p-2.5 rounded-xl bg-amber-500/10 text-amber-400 font-bold text-xs hover:bg-amber-500/20"
                                 >
-                                  ← همه محصولات {c.nameFa}
+                                  <span>← مشاهده همه آبشن‌های {c.nameFa}</span>
+                                  <ChevronLeft className="w-3.5 h-3.5" />
                                 </Link>
                                 {c.children?.map((sub: any) => (
                                   <Link
                                     key={sub.id}
                                     href={`/products?category=${sub.slug}`}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center justify-between p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-900 text-xs"
+                                    className="flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:text-amber-400 hover:bg-slate-900 transition-colors text-xs border border-transparent hover:border-slate-800"
                                   >
-                                    <span>{sub.nameFa}</span>
-                                    <ChevronLeft className="w-3.5 h-3.5 text-slate-600" />
+                                    <span className="font-medium pr-1">• {sub.nameFa}</span>
+                                    <ChevronLeft className="w-3.5 h-3.5 text-slate-500" />
                                   </Link>
                                 ))}
                               </div>
