@@ -1,0 +1,61 @@
+const fs = require('fs');
+const path = require('path');
+
+const dir = path.join(__dirname, 'public', 'images');
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+function makeSvg(title, subtitle, colorStart, colorEnd, carColor = '#f59e0b') {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${colorStart}"/>
+      <stop offset="100%" stop-color="${colorEnd}"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bgGrad)"/>
+  
+  <!-- Studio Lighting Grid -->
+  <circle cx="500" cy="300" r="280" fill="#ffffff" opacity="0.03" />
+  <ellipse cx="500" cy="520" rx="360" ry="40" fill="#000000" opacity="0.6" filter="url(#glow)"/>
+
+  <!-- Sleek Car Silhouette -->
+  <g transform="translate(180, 160)">
+    <!-- Body Profile -->
+    <path d="M 60 280 C 120 280, 160 210, 240 180 C 340 140, 480 140, 540 190 C 580 220, 610 260, 640 280 L 610 320 L 50 320 Z" fill="${carColor}" opacity="0.9" />
+    <!-- Cabin Glass -->
+    <path d="M 230 190 C 310 160, 440 160, 500 200 L 480 230 C 430 200, 320 200, 250 230 Z" fill="#090d16" opacity="0.95" />
+    <!-- Headlight Beam -->
+    <polygon points="50,290 0,330 0,270" fill="url(#goldGrad)" opacity="0.8" filter="url(#glow)" />
+    <!-- Wheels -->
+    <circle cx="160" cy="320" r="45" fill="#090d16" stroke="#475569" stroke-width="6"/>
+    <circle cx="160" cy="320" r="22" fill="#d97706" />
+    <circle cx="520" cy="320" r="45" fill="#090d16" stroke="#475569" stroke-width="6"/>
+    <circle cx="520" cy="320" r="22" fill="#d97706" />
+  </g>
+
+  <!-- Typography & Badges -->
+  <rect x="350" y="70" width="300" height="38" rx="19" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5" />
+  <text x="500" y="95" fill="#f59e0b" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="900" text-anchor="middle" letter-spacing="1">CAR OPTION ENGINEERING STUDIO</text>
+
+  <text x="500" y="590" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="900" text-anchor="middle">${title}</text>
+  <text x="500" y="635" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="500" text-anchor="middle">${subtitle}</text>
+</svg>`;
+}
+
+fs.writeFileSync(path.join(dir, 'hero-car.svg'), makeSvg('ارتقای هوشمند و تجهیز آبشن‌های فابریک', 'سیستم‌های کروز کنترل، مانیتور و دید ۳۶۰ درجه بدون ابطال گارانتی', '#0f172a', '#020617', '#f59e0b'));
+fs.writeFileSync(path.join(dir, 'cruise.svg'), makeSvg('کروز کنترل و لیمیتر سرعت فابریک', 'کلیدهای فابریک غربیلک فرمان سازگار با دنا، تارا و شاهین', '#1e293b', '#090d16', '#38bdf8'));
+fs.writeFileSync(path.join(dir, 'monitor.svg'), makeSvg('مانیتور اندروید خازنی IPS تمام‌لمسی', 'رم ۸ گیگابایت، سیم‌کارت‌خور با پشتیبانی از اپل کارپلی', '#18181b', '#05070a', '#a855f7'));
+fs.writeFileSync(path.join(dir, 'camera360.svg'), makeSvg('سیستم دوربین ۳۶۰ درجه پرنده‌ای (Birdview 3D)', 'سنسورهای ضدآب سونی با شبیه‌سازی سه بعدی و پارک هوشمند', '#0c1a2e', '#030712', '#10b981'));
+
+console.log('Local SVG visuals generated successfully!');

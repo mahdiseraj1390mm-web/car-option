@@ -133,7 +133,7 @@ export default function HomePage() {
               <div className="lg:col-span-5 relative">
                 <div className="relative mx-auto w-full max-w-md lg:max-w-none rounded-3xl overflow-hidden border border-slate-700/80 shadow-2xl shadow-black/80 group">
                   <img
-                    src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80"
+                    src="/images/hero-car.svg"
                     alt="Luxury Automotive Option Engineering"
                     className="w-full h-[380px] sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-700"
                   />
