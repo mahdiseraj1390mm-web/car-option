@@ -57,15 +57,19 @@ export async function POST(req: Request) {
 
     const isAdmin = user.role === "ADMIN";
 
-    // Create Audit Log
-    await prisma.auditLog.create({
-      data: {
-        userId: user.id,
-        action: isAdmin ? "ADMIN_LOGIN" : "USER_LOGIN",
-        resource: "Auth",
-        details: JSON.stringify({ phone: user.phone, role: user.role }),
-      },
-    });
+    // Create Audit Log (wrapped safely)
+    try {
+      await prisma.auditLog.create({
+        data: {
+          userId: user.id,
+          action: isAdmin ? "ADMIN_LOGIN" : "USER_LOGIN",
+          resource: "Auth",
+          details: JSON.stringify({ phone: user.phone, role: user.role }),
+        },
+      });
+    } catch (auditErr) {
+      console.warn("Audit log creation skipped:", auditErr);
+    }
 
     const response = NextResponse.json({
       success: true,
@@ -102,10 +106,10 @@ export async function POST(req: Request) {
     }
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login API error:", error);
     return NextResponse.json(
-      { success: false, error: "خطا در سرور ورود" },
+      { success: false, error: error?.message || "خطا در سرور ورود" },
       { status: 500 }
     );
   }
