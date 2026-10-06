@@ -517,39 +517,57 @@ export default function Header({
           </nav>
         </div>
 
-        {/* Mobile Drawer Menu */}
+        {/* Mobile Drawer Menu (Optimized Native App Experience) */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm">
-            <div className="fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white dark:bg-[#0B0F15] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
-              <div>
-                <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
-                  <span className="font-bold text-lg text-slate-900 dark:text-white">منوی اصلی</span>
+          <div className="lg:hidden fixed inset-0 z-50 flex">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity duration-300"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Slide-out Drawer from Right (RTL Standard) */}
+            <div className="relative mr-auto w-[85%] max-w-sm h-full bg-slate-950 text-white shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-slate-800 z-10 transition-transform duration-300">
+              <div className="p-6">
+                {/* Drawer Header */}
+                <div className="flex items-center justify-between pb-5 border-b border-slate-800">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
+                      <Car className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-black text-sm text-white">منوی تخصصی آپشن خودرو</div>
+                      <div className="text-[11px] text-amber-500 font-bold">مدیریت: کاووسی</div>
+                    </div>
+                  </div>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-slate-800"
+                    aria-label="بستن منو"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                <div className="py-4 space-y-4 text-sm font-medium">
+                {/* User Auth Quick Card */}
+                <div className="py-4 space-y-3">
                   {currentUser ? (
-                    <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs space-y-2">
+                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 text-xs space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-amber-500">
+                        <span className="font-bold text-amber-400">
                           {currentUser.fullName || currentUser.phone}
                         </span>
-                        <button onClick={handleLogout} className="text-rose-500 hover:underline">
-                          خروج
+                        <button onClick={handleLogout} className="text-rose-400 hover:underline">
+                          خروج از حساب
                         </button>
                       </div>
                       {currentUser.role === "ADMIN" && (
                         <Link
                           href="/admin"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-amber-400 font-bold"
+                          className="block text-amber-500 font-bold hover:underline"
                         >
-                          → ورود به پنل مدیریت
+                          → ورود به پنل مدیریت سایت
                         </Link>
                       )}
                     </div>
@@ -559,150 +577,188 @@ export default function Header({
                         setIsMobileMenuOpen(false);
                         setIsAuthModalOpen(true);
                       }}
-                      className="w-full text-right py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-amber-500 font-bold flex items-center gap-2"
+                      className="w-full text-right py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500/20 to-amber-500/5 border border-amber-500/30 text-amber-400 font-bold text-xs flex items-center justify-between hover:bg-amber-500/30 transition-all"
                     >
-                      <User className="w-4 h-4" />
-                      ورود به حساب یا ثبت‌نام
+                      <span className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-amber-400" />
+                        ورود به حساب کاربری / ثبت‌نام
+                      </span>
+                      <ChevronLeft className="w-4 h-4 text-amber-400" />
                     </button>
                   )}
 
+                  {/* Vehicle Garage Action */}
                   <button
                     onClick={() => {
                       setIsMobileMenuOpen(false);
                       onOpenVehicleModal();
                     }}
-                    className="w-full text-right py-2.5 px-3 rounded-xl bg-amber-500/10 text-amber-500 flex items-center gap-2"
+                    className="w-full text-right py-3 px-4 rounded-2xl bg-slate-900 border border-slate-800 text-slate-200 font-bold text-xs flex items-center justify-between hover:border-amber-500/40 transition-all"
                   >
-                    <Car className="w-4 h-4" />
-                    {selectedVehicle
-                      ? `خودرو: ${selectedVehicle.brandName} ${selectedVehicle.modelName}`
-                      : "انتخاب خودروی من"}
+                    <span className="flex items-center gap-2">
+                      <Car className="w-4 h-4 text-amber-500" />
+                      {selectedVehicle
+                        ? `خودرو: ${selectedVehicle.brandName} ${selectedVehicle.modelName}`
+                        : "انتخاب خودروی من (فیلتر هوشمند)"}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
+                      {selectedVehicle ? "تغییر" : "انتخاب"}
+                    </span>
                   </button>
 
-                  <Link
-                    href="/products"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-slate-700 dark:text-slate-300 hover:text-amber-500"
-                  >
-                    کاتالوگ کامل آبشن‌ها
-                  </Link>
+                  {/* Navigation Links */}
+                  <div className="pt-2 space-y-1.5 text-xs font-semibold">
+                    <Link
+                      href="/products"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-colors"
+                    >
+                      <span>کاتالوگ کامل آبشن‌ها</span>
+                      <ChevronLeft className="w-4 h-4 text-slate-600" />
+                    </Link>
 
-                  {/* Mobile Accordion Categories (Standard Mobile Digikala Style) */}
-                  <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden divide-y divide-slate-200/60 dark:divide-slate-800">
-                    <div className="p-3 bg-slate-100/70 dark:bg-slate-850 flex items-center justify-between">
-                      <span className="text-xs font-black text-amber-500 flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-amber-500" />
-                        دسته‌بندی تجهیزات
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {categories.length} دسته
-                      </span>
+                    {/* Mobile Accordion Categories */}
+                    <div className="rounded-2xl bg-slate-900/90 border border-slate-800 overflow-hidden divide-y divide-slate-800/80 my-2">
+                      <div className="p-3 bg-slate-900 flex items-center justify-between">
+                        <span className="text-xs font-black text-amber-400 flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-amber-500" />
+                          دسته‌بندی تجهیزات
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {categories.length} شاخه
+                        </span>
+                      </div>
+
+                      {categories.map((c) => {
+                        const isExpanded = expandedMobileCategory === c.id;
+                        return (
+                          <div key={c.id} className="text-xs">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedMobileCategory(isExpanded ? null : c.id)
+                              }
+                              className={`w-full flex items-center justify-between p-3 transition-colors font-bold ${
+                                isExpanded
+                                  ? "bg-amber-500/10 text-amber-400"
+                                  : "text-slate-300 hover:bg-slate-800"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <span className={isExpanded ? "text-amber-500" : "text-slate-400"}>
+                                  {getCategoryIcon(c.icon)}
+                                </span>
+                                <span>{c.nameFa}</span>
+                              </div>
+                              <ChevronDown
+                                className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+                                  isExpanded ? "rotate-180 text-amber-500" : ""
+                                }`}
+                              />
+                            </button>
+
+                            {isExpanded && (
+                              <div className="p-2 bg-slate-950 space-y-1 border-t border-slate-800">
+                                <Link
+                                  href={`/products?category=${c.slug}`}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="block p-2 rounded-xl bg-amber-500/10 text-amber-400 font-bold text-xs"
+                                >
+                                  ← همه محصولات {c.nameFa}
+                                </Link>
+                                {c.children?.map((sub: any) => (
+                                  <Link
+                                    key={sub.id}
+                                    href={`/products?category=${sub.slug}`}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center justify-between p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-900 text-xs"
+                                  >
+                                    <span>{sub.nameFa}</span>
+                                    <ChevronLeft className="w-3.5 h-3.5 text-slate-600" />
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
 
-                    {categories.map((c) => {
-                      const isExpanded = expandedMobileCategory === c.id;
-                      return (
-                        <div key={c.id} className="text-xs">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedMobileCategory(isExpanded ? null : c.id)
-                            }
-                            className={`w-full flex items-center justify-between p-3.5 transition-colors font-bold ${
-                              isExpanded
-                                ? "bg-amber-500/10 text-amber-500"
-                                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <span className={isExpanded ? "text-amber-500" : "text-slate-400"}>
-                                {getCategoryIcon(c.icon)}
-                              </span>
-                              <span>{c.nameFa}</span>
-                            </div>
-                            <ChevronDown
-                              className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                                isExpanded ? "rotate-180 text-amber-500" : ""
-                              }`}
-                            />
-                          </button>
-
-                          {isExpanded && (
-                            <div className="p-2.5 bg-slate-100/50 dark:bg-slate-950/60 space-y-1 border-t border-slate-200/50 dark:border-slate-800/50">
-                              <Link
-                                href={`/products?category=${c.slug}`}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="block p-2 rounded-xl bg-amber-500/10 text-amber-500 font-bold hover:bg-amber-500/20 text-xs"
-                              >
-                                ← همه تجهیزات {c.nameFa}
-                              </Link>
-                              {c.children?.map((sub: any) => (
-                                <Link
-                                  key={sub.id}
-                                  href={`/products?category=${sub.slug}`}
-                                  onClick={() => setIsMobileMenuOpen(false)}
-                                  className="flex items-center justify-between p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-amber-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/60 text-xs"
-                                >
-                                  <span>{sub.nameFa}</span>
-                                  <ChevronLeft className="w-3.5 h-3.5 text-slate-400" />
-                                </Link>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                    <Link
+                      href="/packages"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-colors"
+                    >
+                      <span>پکیج‌های مهندسی تجهیز</span>
+                      <ChevronLeft className="w-4 h-4 text-slate-600" />
+                    </Link>
+                    <Link
+                      href="/projects"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-colors"
+                    >
+                      <span>پروژه‌ها و اسلایدر قبل/بعد</span>
+                      <ChevronLeft className="w-4 h-4 text-slate-600" />
+                    </Link>
+                    <Link
+                      href="/tracking"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-900 text-amber-400 font-bold border border-slate-800"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-amber-500" />
+                        پیگیری آنلاین سفارشات
+                      </span>
+                      <ChevronLeft className="w-4 h-4 text-amber-500" />
+                    </Link>
+                    <Link
+                      href="/image-search"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-900 text-amber-400 font-bold transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-amber-500" />
+                        جستجوی هوشمند با تصویر قطعه
+                      </span>
+                      <ChevronLeft className="w-4 h-4 text-amber-500" />
+                    </Link>
+                    <Link
+                      href="/chat"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-amber-400 transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-slate-400" />
+                        گفتگوی آنلاین با پشتیبانی
+                      </span>
+                      <ChevronLeft className="w-4 h-4 text-slate-600" />
+                    </Link>
                   </div>
-
-                  <Link
-                    href="/packages"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-slate-700 dark:text-slate-300 hover:text-amber-500"
-                  >
-                    پکیج‌های تجهیز
-                  </Link>
-                  <Link
-                    href="/projects"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-slate-700 dark:text-slate-300 hover:text-amber-500"
-                  >
-                    پروژه‌ها و اسلایدر قبل/بعد
-                  </Link>
-                  <Link
-                    href="/tracking"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-slate-700 dark:text-slate-300 hover:text-amber-500 font-semibold"
-                  >
-                    پیگیری آنلاین وضعیت سفارش
-                  </Link>
-                  <Link
-                    href="/image-search"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-amber-500 font-bold"
-                  >
-                    جستجوی هوشمند با عکس
-                  </Link>
-                  <Link
-                    href="/chat"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-slate-700 dark:text-slate-300 hover:text-amber-500"
-                  >
-                    گفتگوی داخلی با پشتیبانی
-                  </Link>
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              {/* Drawer Footer CTA */}
+              <div className="p-6 border-t border-slate-800 space-y-3 bg-slate-950">
+                <a
+                  href="tel:09133332737"
+                  className="w-full py-2.5 px-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs font-mono flex items-center justify-center gap-2 hover:border-amber-500/50"
+                >
+                  <PhoneCall className="w-4 h-4 text-amber-500" />
+                  <span>تماس: ۰۹۱۳۳۳۳۲۷۳۷</span>
+                </a>
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     onOpenOrderModal();
                   }}
-                  className="w-full py-3 rounded-xl bg-amber-500 text-slate-950 font-bold text-center flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
                 >
-                  <PhoneCall className="w-4 h-4" />
-                  ثبت درخواست سفارش
+                  درخواست استعلام و مشاوره فنی
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
               </div>
             </div>
           </div>
