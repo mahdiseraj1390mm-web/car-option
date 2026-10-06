@@ -308,7 +308,7 @@ export default function HomePage() {
               <div className="lg:col-span-5">
                 <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80"
+                    src="/images/package-car.jpg"
                     alt="Dena Plus Package"
                     className="w-full h-64 object-cover"
                   />
@@ -332,8 +332,8 @@ export default function HomePage() {
 
           <div className="max-w-4xl mx-auto">
             <BeforeAfterSlider
-              beforeImage="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=80"
-              afterImage="https://images.unsplash.com/photo-1551522435-a13afa10f103?auto=format&fit=crop&w=1000&q=80"
+              beforeImage="/images/before-install.jpg"
+              afterImage="/images/after-install.jpg"
               beforeLabel="قبل از نصب: مانیتور و داشبورد فابریک ساده"
               afterLabel="بعد از نصب: مانیتور ۱۲ اینچ IPS و دوربین ۳۶۰ فعال"
             />
