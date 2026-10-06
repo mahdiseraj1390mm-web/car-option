@@ -72,7 +72,7 @@ export default function HomePage() {
               <div className="lg:col-span-7 space-y-6 text-center lg:text-right">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold tracking-wide">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  استاندارد کارخانه‌ای • بدون تداخل در سیم‌کشی فابریک
+                  مدیریت: کاووسی • استاندارد کارخانه‌ای بدون تداخل در سیم‌کشی
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.25]">

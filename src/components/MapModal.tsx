@@ -76,7 +76,7 @@ export default function MapModal({
             </div>
             <div className="flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5 text-amber-500" />
-              <span className="font-mono text-slate-300">021-88992211</span>
+              <span className="font-mono text-amber-400 font-bold">۰۹۱۳۳۳۳۲۷۳۷ (مدیریت کاووسی)</span>
             </div>
           </div>
         </div>

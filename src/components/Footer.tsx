@@ -121,11 +121,11 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-slate-400">
-              مرکز مهندسی، مشاوره تخصصی و تجهیز انواع آبشن‌های فابریک و هوشمند خودروهای داخلی و وارداتی با استانداردهای کارخانه‌ای و بدون تداخل در سیم‌کشی.
+              مرکز مهندسی، مشاوره تخصصی و تجهیز انواع آبشن‌های فابریک و هوشمند خودروهای داخلی و وارداتی با استانداردهای کارخانه‌ای به مدیریت کاووسی.
             </p>
-            <div className="pt-2 flex items-center gap-2 text-xs text-amber-500">
+            <div className="pt-2 flex items-center gap-2 text-xs text-amber-500 font-bold">
               <ShieldCheck className="w-4 h-4" />
-              <span>کلیه قطعات دارای ضمانت‌نامه کتبی معتبر می‌باشند.</span>
+              <span>پلتفرم تخصصی آپشن خودرو — مدیریت: کاووسی</span>
             </div>
           </div>
 
@@ -207,18 +207,18 @@ export default function Footer() {
               اطلاعات تماس
             </h4>
             <div className="space-y-2.5 text-xs text-slate-300">
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-amber-500 shrink-0" />
-                <a
-                  href={`tel:${setting?.phone || "02188992211"}`}
-                  className="hover:text-amber-400 font-mono text-sm"
-                >
-                  {setting?.phone || "021-88992211"}
-                </a>
+              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 font-bold text-center mb-2">
+                مدیریت مجموعه: جناب آقای کاووسی
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-amber-500 shrink-0" />
-                <span className="font-mono">{setting?.email || "info@caroption.ir"}</span>
+                <Phone className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>شماره تماس و پشتیبانی:</span>
+                <a
+                  href={`tel:${setting?.phone || "09133332737"}`}
+                  className="hover:text-amber-400 font-bold font-mono text-sm text-white"
+                >
+                  {setting?.phone || "09133332737"}
+                </a>
               </div>
             </div>
 
@@ -251,9 +251,9 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© تمامی حقوق برای پلتفرم مهندسی و تجهیز آبشن خودرو محفوظ است.</p>
+          <p>© تمامی حقوق برای پلتفرم تخصصی آپشن خودرو (مدیریت کاووسی) محفوظ است.</p>
           <div className="flex items-center gap-4">
-            <span>طراحی بر اساس اصول مهندسی خودرویی</span>
+            <span className="text-amber-500 font-bold">مدیریت: کاووسی | ۰۹۱۳۳۳۳۲۷۳۷</span>
           </div>
         </div>
       </div>

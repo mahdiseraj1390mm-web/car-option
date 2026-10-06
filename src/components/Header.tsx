@@ -190,8 +190,8 @@ export default function Header({
                       LUXURY
                     </span>
                   </span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    {setting?.siteName || "پلتفرم مهندسی و تجهیز آبشن خودرو"}
+                  <span className="text-[11px] text-amber-500 font-bold">
+                    {setting?.siteName || "پلتفرم تخصصی آپشن خودرو"} • مدیریت کاووسی
                   </span>
                 </div>
               </Link>
@@ -500,14 +500,19 @@ export default function Header({
               </Link>
             </div>
 
-            <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-              <span>شماره مشاوره تخصصی:</span>
-              <a
-                href={`tel:${setting?.phone || "02188992211"}`}
-                className="font-bold text-slate-900 dark:text-white hover:text-amber-500 tracking-wider font-mono text-sm"
-              >
-                {setting?.phone || "021-88992211"}
-              </a>
+            <div className="flex items-center gap-3">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                مدیریت: کاووسی
+              </span>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <span>مشاوره و پشتیبانی:</span>
+                <a
+                  href={`tel:${setting?.phone || "09133332737"}`}
+                  className="font-bold text-slate-900 dark:text-white hover:text-amber-500 tracking-wider font-mono text-sm dir-ltr"
+                >
+                  {setting?.phone || "09133332737"}
+                </a>
+              </div>
             </div>
           </nav>
         </div>
