@@ -759,10 +759,6 @@ export default function Header({
             </div>
           </div>
         )}
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Mobile Floating Bottom Bar for Standard Native Mobile Experience */}
