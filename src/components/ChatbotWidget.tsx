@@ -79,7 +79,7 @@ export default function ChatbotWidget({ onOpenOrderModal }: { onOpenOrderModal: 
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-50">
+    <div className="fixed bottom-16 sm:bottom-6 left-3 sm:left-6 z-40">
       {/* Floating Trigger Button */}
       {!isOpen && (
         <button

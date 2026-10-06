@@ -562,16 +562,17 @@ export default function Header({
 
       {/* Mobile Drawer Menu (Outside header to prevent backdrop-filter containing block trap) */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-[9999] flex justify-end">
+        <div className="lg:hidden fixed inset-0 z-[9999]" dir="rtl">
           {/* Backdrop with smooth blur */}
           <div
             className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300"
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          {/* Slide-out Drawer Panel from Right (RTL Persian standard) */}
+          {/* Slide-out Drawer Panel strictly anchored to the RIGHT side */}
           <aside
-            className="relative w-[86vw] max-w-[360px] h-full h-[100dvh] bg-[#0B0F15] text-slate-100 shadow-2xl flex flex-col z-10 border-l border-slate-800/80 animate-in slide-in-from-right duration-300 overflow-hidden"
+            style={{ right: 0, left: "auto" }}
+            className="fixed top-0 bottom-0 right-0 w-[86vw] max-w-[340px] h-full h-[100dvh] bg-[#0B0F15] text-slate-100 shadow-2xl flex flex-col z-50 border-l border-slate-800/80 animate-in slide-in-from-right duration-300 overflow-hidden"
           >
             {/* 1. Drawer Header */}
             <div className="p-4 flex items-center justify-between border-b border-slate-800/90 bg-[#0F172A] shrink-0">

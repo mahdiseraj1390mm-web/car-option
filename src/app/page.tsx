@@ -62,34 +62,34 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* 1. Hero Section (Automotive Studio Stage) */}
-        <section className="relative w-full dark-stage py-20 lg:py-28 overflow-hidden border-b border-slate-200 dark:border-slate-800/80">
+        <section className="relative w-full dark-stage py-10 sm:py-16 lg:py-24 overflow-hidden border-b border-slate-200 dark:border-slate-800/80">
           {/* Subtle Ambient Light Effect */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-amber-500/10 blur-[130px] pointer-events-none rounded-full" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Column: Heading & CTAs */}
-              <div className="lg:col-span-7 space-y-6 text-center lg:text-right">
+              <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-right">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold tracking-wide">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  مدیریت: کاووسی • استاندارد کارخانه‌ای بدون تداخل در سیم‌کشی
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>مدیریت: کاووسی • استاندارد فابریک بدون تداخل سیم‌کشی</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.25]">
-                  پلتفرم مهندسی و ارتقای <br />
+                <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.3] sm:leading-[1.25]">
+                  پلتفرم مهندسی و ارتقای <br className="hidden sm:inline" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-600">
                     آبشن‌های تخصصی خودرو
                   </span>
                 </h1>
 
-                <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+                <p className="text-xs sm:text-base text-slate-300 max-w-2xl leading-relaxed mx-auto lg:mx-0">
                   جستجو، بررسی انطباق و درخواست استعلام و نصب آبشن‌های فابریک شامل کروز کنترل، مانیتورهای اندروید، دوربین ۳۶۰ درجه و کلاچ اتوماتیک بر اساس برند، مدل و سال خودرو با پشتیبانی کارشناسان فنی.
                 </p>
 
-                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4">
                   <button
                     onClick={() => handleOpenOrder()}
-                    className="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 flex items-center gap-2 hover:scale-105 active:scale-95 transition-all"
+                    className="px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-amber-500/25 flex items-center gap-2 hover:scale-105 active:scale-95 transition-all"
                   >
                     <PhoneCall className="w-4 h-4" />
                     درخواست استعلام و مشاوره فنی
@@ -97,7 +97,7 @@ export default function HomePage() {
 
                   <button
                     onClick={() => setIsVehicleModalOpen(true)}
-                    className="px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 font-bold text-sm flex items-center gap-2 hover:border-amber-500/50 transition-all"
+                    className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 font-bold text-xs sm:text-sm flex items-center gap-2 hover:border-amber-500/50 transition-all"
                   >
                     <Car className="w-4 h-4 text-amber-500" />
                     انتخاب خودروی من
@@ -105,7 +105,7 @@ export default function HomePage() {
 
                   <Link
                     href="/products"
-                    className="px-5 py-3.5 rounded-2xl text-slate-300 hover:text-white font-bold text-sm flex items-center gap-1 transition-colors"
+                    className="px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl text-slate-300 hover:text-white font-bold text-xs sm:text-sm flex items-center gap-1 transition-colors"
                   >
                     مشاهده کاتالوگ
                     <ChevronLeft className="w-4 h-4" />
@@ -113,42 +113,42 @@ export default function HomePage() {
                 </div>
 
                 {/* Trust Badges */}
-                <div className="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800/80 text-xs text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-amber-500" />
-                    <span>گارانتی طلایی تعویض</span>
+                <div className="pt-4 sm:pt-6 grid grid-cols-3 gap-2 sm:gap-4 border-t border-slate-800/80 text-[11px] sm:text-xs text-slate-400">
+                  <div className="flex items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span>گارانتی تعویض</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Wrench className="w-4 h-4 text-amber-500" />
+                  <div className="flex items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+                    <Wrench className="w-4 h-4 text-amber-500 shrink-0" />
                     <span>نصب سوکت به سوکت</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Award className="w-4 h-4 text-amber-500" />
+                  <div className="flex items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+                    <Award className="w-4 h-4 text-amber-500 shrink-0" />
                     <span>بدون ابطال گارانتی</span>
                   </div>
                 </div>
               </div>
 
-              {/* Right Column: Hero Showcase Image */}
-              <div className="lg:col-span-5 relative">
-                <div className="relative mx-auto w-full max-w-md lg:max-w-none rounded-3xl overflow-hidden border border-slate-700/80 shadow-2xl shadow-black/80 group">
+              {/* Right Column: Hero Showcase Image (Properly scaled for mobile!) */}
+              <div className="lg:col-span-5 relative mt-2 lg:mt-0">
+                <div className="relative mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none rounded-2xl sm:rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl shadow-black/80 group">
                   <img
                     src="/images/hero-car.jpg"
                     alt="Luxury Automotive Option Engineering"
-                    className="w-full h-[380px] sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full aspect-[16/10] sm:aspect-[16/9] lg:h-[440px] lg:aspect-auto object-cover object-center group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent pointer-events-none" />
                   
-                  <div className="absolute bottom-6 right-6 left-6 p-4 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-slate-800 flex items-center justify-between">
+                  <div className="absolute bottom-3 right-3 left-3 sm:bottom-6 sm:right-6 sm:left-6 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950/85 backdrop-blur-md border border-slate-800 flex items-center justify-between">
                     <div>
-                      <span className="block text-[11px] text-amber-400 font-mono">FEATURED UPGRADE</span>
-                      <strong className="text-sm text-white font-bold">تجهیز هوشمند کابین و دید ۳۶۰ درجه</strong>
+                      <span className="block text-[9px] sm:text-[11px] text-amber-400 font-mono font-bold">FEATURED UPGRADE</span>
+                      <strong className="text-xs sm:text-sm text-white font-bold block truncate max-w-[200px] sm:max-w-none">تجهیز هوشمند کابین و دید ۳۶۰ درجه</strong>
                     </div>
                     <Link
                       href="/projects"
-                      className="p-2.5 rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors"
+                      className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors shrink-0 mr-2"
                     >
-                      <ArrowRight className="w-4 h-4 rotate-180" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 rotate-180" />
                     </Link>
                   </div>
                 </div>
