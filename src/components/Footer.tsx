@@ -113,8 +113,12 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-amber-500/20">
-                <Car className="w-5 h-5" />
+              <div className="w-11 h-11 rounded-xl overflow-hidden bg-slate-900 border border-amber-500/40 shadow-lg shadow-amber-500/20 flex items-center justify-center p-0.5 shrink-0">
+                <img
+                  src="/images/logo.png"
+                  alt="CAR OPTION"
+                  className="w-full h-full object-cover object-top scale-110"
+                />
               </div>
               <span className="text-xl font-black text-white tracking-tight">
                 CAR<span className="text-amber-500">OPTION</span>

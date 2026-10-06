@@ -51,10 +51,12 @@ import {
   Star,
   Download,
   Bot,
+  Menu,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
     | "orders"
     | "products"
@@ -909,32 +911,41 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-amber-500 selection:text-slate-950">
       {/* Top Admin Nav */}
-      <header className="h-16 border-b border-slate-800 bg-[#111722] px-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black">
+      <header className="h-16 border-b border-slate-800 bg-[#111722] px-3 sm:px-6 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-amber-500 hover:text-white transition-colors"
+            aria-label="منوی پنل"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-sm font-black flex items-center gap-2">
-              پنل مدیریت مهندسی آبشن خودرو
-              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
-                SUPER ADMIN
+            <h1 className="text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2">
+              <span className="truncate max-w-[140px] sm:max-w-none">پنل مدیریت مهندسی آبشن</span>
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
+                ADMIN
               </span>
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="text-xs text-slate-400 hidden sm:block">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="text-xs text-slate-400 hidden md:block">
             <span>مدیر ارشد: </span>
             <strong className="text-white">{currentUser?.fullName || currentUser?.phone}</strong>
           </div>
 
           <Link
             href="/"
-            className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+            className="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 p-2 rounded-xl bg-slate-900 border border-slate-800 sm:border-transparent sm:bg-transparent transition-colors"
           >
-            مشاهده سایت اصلی
+            <span className="hidden sm:inline">مشاهده سایت</span>
             <ArrowRight className="w-3.5 h-3.5 rotate-180" />
           </Link>
 
@@ -944,15 +955,62 @@ export default function AdminDashboardPage() {
             className="flex items-center gap-1 text-xs text-rose-400 hover:text-rose-300 p-2 rounded-xl bg-rose-500/10 border border-rose-500/20"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>خروج</span>
+            <span className="hidden sm:inline">خروج</span>
           </button>
         </div>
       </header>
 
+      {/* Mobile Horizontal Tabs Bar (Fast navigation without blocking the screen!) */}
+      <div className="lg:hidden flex items-center gap-1.5 p-2 bg-[#0B0F15] border-b border-slate-800/80 overflow-x-auto no-scrollbar shrink-0 text-xs">
+        {[
+          { key: "orders", label: "سفارش‌ها", count: orders.length, icon: PhoneCall },
+          { key: "products", label: "محصولات", count: products.length, icon: Package },
+          { key: "categories", label: "دسته‌ها", count: categories.length, icon: Layers },
+          { key: "users", label: "کاربران", count: users.length, icon: Users },
+          { key: "conversations", label: "پیام‌ها", count: conversations.length, icon: MessageSquare },
+          { key: "cms", label: "تنظیمات سایت", icon: Settings },
+          { key: "workingHours", label: "ساعات کاری", icon: Clock },
+          { key: "socials", label: "شبکه‌ها", icon: Globe },
+          { key: "stories", label: "استوری‌ها", count: stories.length, icon: Film },
+          { key: "projects", label: "پروژه‌ها", count: projects.length, icon: Sliders },
+          { key: "packages", label: "پکیج‌ها", count: packages.length, icon: Boxes },
+          { key: "reviews", label: "دیدگاه‌ها", count: reviews.length, icon: Star },
+          { key: "audit", label: "لاگ‌ها", count: auditLogs.length, icon: ShieldCheck },
+          { key: "faq", label: "ربات AI", count: faqs.length, icon: Bot },
+        ].map((tab: any) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold shrink-0 flex items-center gap-1.5 transition-all ${
+                isActive
+                  ? "bg-amber-500 text-slate-950 shadow-md font-black"
+                  : "bg-slate-900/90 text-slate-400 hover:text-white border border-slate-800"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                    isActive ? "bg-slate-950/20 text-slate-950" : "bg-slate-800 text-slate-400"
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Main Container */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-64 border-l border-slate-800 bg-[#0B0F15] p-4 flex flex-col justify-between">
+        {/* Desktop Sidebar (hidden on mobile so it doesn't squish main content!) */}
+        <aside className="hidden lg:flex w-64 border-l border-slate-800 bg-[#0B0F15] p-4 flex-col justify-between shrink-0">
           <nav className="space-y-1.5 text-xs font-bold">
             <button
               onClick={() => setActiveTab("orders")}
@@ -1162,8 +1220,88 @@ export default function AdminDashboardPage() {
           </div>
         </aside>
 
-        {/* Content Area */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        {/* Mobile Slide-out Drawer Panel */}
+        {isMobileSidebarOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 flex justify-end" dir="rtl">
+            <div
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            />
+            <aside
+              style={{ right: 0, left: "auto" }}
+              className="fixed top-0 bottom-0 right-0 w-[84vw] max-w-[320px] h-full bg-[#0B0F15] text-white p-4 shadow-2xl z-50 flex flex-col justify-between overflow-y-auto border-l border-slate-800 animate-in slide-in-from-right duration-300"
+            >
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-amber-500" />
+                    <span className="font-black text-sm text-white">منوی پنل مدیریت</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileSidebarOpen(false)}
+                    className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <nav className="space-y-1 text-xs font-bold">
+                  {[
+                    { key: "orders", label: "درخواست‌های سفارش", count: orders.length, icon: PhoneCall },
+                    { key: "products", label: "مدیریت محصولات", count: products.length, icon: Package },
+                    { key: "categories", label: "مدیریت دسته‌بندی‌ها", count: categories.length, icon: Layers },
+                    { key: "users", label: "کاربران و مدیران", count: users.length, icon: Users },
+                    { key: "conversations", label: "گفتگوها و پیام‌های صوتی", count: conversations.length, icon: MessageSquare },
+                    { key: "cms", label: "هدر، فوتر و متون سایت", icon: Settings },
+                    { key: "workingHours", label: "ساعات کاری و پذیرش", icon: Clock },
+                    { key: "socials", label: "شبکه‌ها (ایتا، روبیکا...)", icon: Globe },
+                    { key: "stories", label: "استوری‌های سایت", count: stories.length, icon: Film },
+                    { key: "projects", label: "پروژه‌ها (Before/After)", count: projects.length, icon: Sliders },
+                    { key: "packages", label: "پکیج‌های تجهیز خودرو", count: packages.length, icon: Boxes },
+                    { key: "reviews", label: "دیدگاه‌ها و امتیازات", count: reviews.length, icon: Star },
+                    { key: "audit", label: "لاگ‌های امنیتی (Audit)", count: auditLogs.length, icon: ShieldCheck },
+                    { key: "faq", label: "دانش ربات هوش مصنوعی", count: faqs.length, icon: Bot },
+                  ].map((item: any) => {
+                    const Icon = item.icon;
+                    const isActive = activeTab === item.key;
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={() => {
+                          setActiveTab(item.key);
+                          setIsMobileSidebarOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between p-2.5 rounded-xl transition-all ${
+                          isActive
+                            ? "bg-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/20"
+                            : "text-slate-400 hover:bg-slate-900 hover:text-white"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Icon className="w-4 h-4" />
+                          <span>{item.label}</span>
+                        </div>
+                        {item.count !== undefined && (
+                          <span className="font-mono text-xs">{item.count}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-[11px] text-slate-400 space-y-1 mt-4">
+                <span className="block font-bold text-slate-200">وضعیت دسترسی: Super Admin</span>
+                <span className="block font-mono text-[10px]">موبایل: {currentUser?.phone}</span>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        {/* Content Area - 100% full width on mobile! */}
+        <main className="w-full flex-1 p-3.5 sm:p-6 overflow-y-auto min-w-0">
           {saveSuccess && (
             <div className="mb-4 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2 animate-fadeIn">
               <CheckCircle className="w-4 h-4" />
@@ -2430,14 +2568,14 @@ export default function AdminDashboardPage() {
 
       {/* PRODUCT CREATE / EDIT MODAL */}
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="relative w-full max-w-2xl bg-[#111722] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 text-white space-y-5 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md">
+          <div className="relative w-full max-w-2xl bg-[#111722] rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl border border-slate-800 text-white space-y-4 sm:space-y-5 max-h-[92vh] overflow-y-auto">
             <h3 className="text-base font-black border-b border-slate-800 pb-3">
               {editingProduct ? "ویرایش مشخصات محصول" : "افزودن محصول جدید به کاتالوگ"}
             </h3>
 
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs sm:text-sm">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-slate-400 mb-1">عنوان فارسی محصول *</label>
                   <input
@@ -2471,7 +2609,7 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-slate-400 mb-1">وضعیت قیمت</label>
                   <select

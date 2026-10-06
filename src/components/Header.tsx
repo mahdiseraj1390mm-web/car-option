@@ -195,8 +195,12 @@ export default function Header({
               </button>
 
               <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0">
-                  <Car className="w-5 h-5 sm:w-6 sm:h-6 text-slate-950 font-bold" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-slate-950 border border-amber-500/40 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0 flex items-center justify-center p-0.5">
+                  <img
+                    src="/images/logo.png"
+                    alt="Car Option Luxury - کاووسی"
+                    className="w-full h-full object-cover object-top scale-110"
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
@@ -577,8 +581,12 @@ export default function Header({
             {/* 1. Drawer Header */}
             <div className="p-4 flex items-center justify-between border-b border-slate-800/90 bg-[#0F172A] shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
-                  <Car className="w-5 h-5 text-slate-950" />
+                <div className="w-11 h-11 rounded-xl overflow-hidden bg-slate-950 border border-amber-500/40 shadow-md shadow-amber-500/20 flex items-center justify-center p-0.5 shrink-0">
+                  <img
+                    src="/images/logo.png"
+                    alt="Car Option Luxury"
+                    className="w-full h-full object-cover object-top scale-110"
+                  />
                 </div>
                 <div>
                   <div className="font-black text-sm text-white flex items-center gap-1.5">
