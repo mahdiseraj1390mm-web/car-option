@@ -1,0 +1,482 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// -------------------------------------------------------------
+// 1. احراز هویت و کاربران (Auth, Users & RBAC)
+// -------------------------------------------------------------
+
+model User {
+  id             String         @id @default(cuid())
+  fullName       String?
+  phone          String?        @unique
+  email          String?        @unique
+  passwordHash   String?
+  avatar         String?
+  isVerified     Boolean        @default(false)
+  isBlocked      Boolean        @default(false)
+  googleId       String?        @unique
+  role           String         @default("USER") // USER, ADMIN
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  vehicles       UserVehicle[]
+  favorites      Favorite[]
+  reviews        Review[]
+  orderRequests  OrderRequest[]
+  conversations  Conversation[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]     @relation("AdminAudit")
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique // Super Admin, Product Admin, Support Admin, Order Admin
+  description String?
+  permissions String       // JSON string of allowed capabilities
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  admins      AdminUser[]
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation("AdminAudit", fields: [userId], references: [id])
+  action    String   // DELETE_PRODUCT, UPDATE_PRICE, BLOCK_USER, etc.
+  resource  String   // Product, OrderRequest, User
+  details   String?  // JSON string with before/after changes
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// 2. مدیریت خودرو و سازگاری (Vehicles & Compatibility)
+// -------------------------------------------------------------
+
+model VehicleBrand {
+  id        String         @id @default(cuid())
+  nameFa    String         // مثلا: ایران خودرو، کیا، هیوندای
+  nameEn    String         // Iran Khodro, Kia, Hyundai
+  slug      String         @unique
+  logo      String?
+  models    VehicleModel[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model VehicleModel {
+  id        String         @id @default(cuid())
+  brandId   String
+  brand     VehicleBrand   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  nameFa    String         // مثلا: دنا، تارا، ۲۰۷، اسپورتیج
+  nameEn    String         // Dena, Tara, 207, Sportage
+  slug      String         @unique
+  image     String?
+  trims     VehicleTrim[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model VehicleTrim {
+  id        String         @id @default(cuid())
+  modelId   String
+  model     VehicleModel   @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  nameFa    String         // مثلا: پلاس توربو اتوماتیک، دنده‌ای
+  nameEn    String?
+  years     VehicleYear[]
+  userVehicles UserVehicle[]
+  compatibilities ProductVehicleCompatibility[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model VehicleYear {
+  id        String         @id @default(cuid())
+  trimId    String
+  trim      VehicleTrim    @relation(fields: [trimId], references: [id], onDelete: Cascade)
+  year      String         // مثلا: 1402, 1403, 2023
+  compatibilities ProductVehicleCompatibility[]
+  userVehicles UserVehicle[]
+}
+
+model UserVehicle {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trimId    String
+  trim      VehicleTrim  @relation(fields: [trimId], references: [id])
+  yearId    String?
+  year      VehicleYear? @relation(fields: [yearId], references: [id])
+  isPrimary Boolean      @default(false)
+  nickname  String?
+  createdAt DateTime     @default(now())
+}
+
+// -------------------------------------------------------------
+// 3. دسته‌بندی‌ها، برندها و محصولات (Catalog)
+// -------------------------------------------------------------
+
+model Category {
+  id          String        @id @default(cuid())
+  nameFa      String        // مثلا: سیستم‌های تصویری، کروز کنترل
+  nameEn      String?
+  slug        String        @unique
+  parentId    String?
+  parent      Category?     @relation("CategorySub", fields: [parentId], references: [id])
+  children    Category[]    @relation("CategorySub")
+  image       String?
+  icon        String?       // Lucide icon name
+  description String?
+  orderIndex  Int           @default(0)
+  isActive    Boolean       @default(true)
+  products    ProductCategory[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Brand {
+  id          String    @id @default(cuid())
+  nameFa      String    // پایونیر، وایپرو، نوهاک
+  nameEn      String
+  slug        String    @unique
+  logo        String?
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  sku            String?   @unique
+  titleFa        String
+  titleEn        String?
+  slug           String    @unique
+  shortDesc      String?
+  fullDesc       String?
+  brandId        String?
+  brand          Brand?    @relation(fields: [brandId], references: [id])
+  
+  // وضعیت موجودی: AVAILABLE, OUT_OF_STOCK, COMING_SOON, ON_ORDER, DISCONTINUED
+  stockStatus    String    @default("AVAILABLE")
+  
+  // وضعیت قیمت: SHOW_PRICE, INQUIRY, CALL, HIDDEN
+  priceStatus    String    @default("INQUIRY")
+  price          Float?
+  discountPrice  Float?
+  
+  warranty       String?   // مثلا: ۱۸ ماه گارانتی تعویض طلایی
+  installation   String?   // مثلا: نصب فابریک بدون تداخل در سیم‌کشی
+  specs          String?   // JSON string of technical specifications
+  features       String?   // JSON array string of highlights
+  
+  isFeatured     Boolean   @default(false)
+  isSpecialOffer Boolean   @default(false)
+  viewCount      Int       @default(0)
+  orderCount     Int       @default(0)
+  rating         Float     @default(5.0)
+  
+  seoTitle       String?
+  seoDesc        String?
+  
+  categories     ProductCategory[]
+  media          ProductMedia[]
+  compatibilities ProductVehicleCompatibility[]
+  packageItems   PackageProduct[]
+  favorites      Favorite[]
+  reviews        Review[]
+  orderRequests  OrderRequest[]
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+}
+
+model ProductMedia {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String
+  type        String   // IMAGE, VIDEO, INSTALL_VIDEO
+  isPrimary   Boolean  @default(false)
+  orderIndex  Int      @default(0)
+  title       String?
+  createdAt   DateTime @default(now())
+}
+
+model ProductVehicleCompatibility {
+  id           String       @id @default(cuid())
+  productId    String
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  trimId       String?
+  trim         VehicleTrim? @relation(fields: [trimId], references: [id])
+  yearId       String?
+  year         VehicleYear? @relation(fields: [yearId], references: [id])
+  // status: FULL (کامل), CONDITIONAL (مشروط), REQUIRES_ADAPTER (نیازمند تبدیل)
+  status       String       @default("FULL")
+  notes        String?      // توضیحات فنی سازگاری
+}
+
+// -------------------------------------------------------------
+// 4. پکیج‌های آبشن (Packages)
+// -------------------------------------------------------------
+
+model Package {
+  id             String           @id @default(cuid())
+  titleFa        String
+  titleEn        String?
+  slug           String           @unique
+  description    String?
+  image          String?
+  bannerImage    String?
+  priceStatus    String           @default("INQUIRY")
+  price          Float?
+  isActive       Boolean          @default(true)
+  items          PackageProduct[]
+  orderRequests  OrderRequest[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model PackageProduct {
+  id         String   @id @default(cuid())
+  packageId  String
+  package    Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderIndex Int      @default(0)
+}
+
+// -------------------------------------------------------------
+// 5. درخواست سفارش (Order Request - No Cart/No Gateway)
+// -------------------------------------------------------------
+
+model OrderRequest {
+  id             String    @id @default(cuid())
+  trackingCode   String    @unique // کد رهگیری هوشمند
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
+  customerName   String
+  customerPhone  String
+  productId      String?
+  product        Product?  @relation(fields: [productId], references: [id])
+  packageId      String?
+  package        Package?  @relation(fields: [packageId], references: [id])
+  vehicleInfo    String?   // خودروی ثبت شده مثلا دنا پلاس ۱۴۰۳
+  description    String?
+  preferredContact String  @default("PHONE") // PHONE, TELEGRAM, EITAA, WHATSAPP, IN_APP
+  bestTimeToCall String?   // زمان مناسب تماس
+  
+  // وضعیت: NEW, UNDER_REVIEW, CONTACTED, WAITING_CUSTOMER, COMPLETED, CANCELLED
+  status         String    @default("NEW")
+  adminNotes     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// -------------------------------------------------------------
+// 6. پیام‌رسان داخلی و چندرسانه‌ای (Omnichannel Chat & Voice)
+// -------------------------------------------------------------
+
+model Conversation {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject       String?
+  // وضعیت گفتگو: NEW, ANSWERING, WAITING_CUSTOMER, RESOLVED, CLOSED
+  status        String    @default("NEW")
+  assignedTo    String?   // شناسه ادمین پاسخگو
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  messages      Message[]
+}
+
+model Message {
+  id             String              @id @default(cuid())
+  conversationId String
+  conversation   Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderType     String              // USER, ADMIN
+  senderId       String
+  senderName     String?
+  content        String?
+  isRead         Boolean             @default(false)
+  createdAt      DateTime            @default(now())
+  attachments    MessageAttachment[]
+}
+
+model MessageAttachment {
+  id         String   @id @default(cuid())
+  messageId  String
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  fileUrl    String
+  fileType   String   // IMAGE, VIDEO, VOICE, DOCUMENT
+  fileName   String?
+  fileSize   Int?
+  duration   Int?     // ثانیه برای وویس
+  createdAt  DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// 7. پروژه‌های نصب‌شده و Before/After
+// -------------------------------------------------------------
+
+model Project {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  vehicleName  String    // مثلا: تارا اتوماتیک V4
+  description  String?
+  coverImage   String
+  beforeImage  String?   // عکس قبل از نصب
+  afterImage   String?   // عکس بعد از نصب
+  videoUrl     String?
+  productsUsed String?   // JSON array of product titles/ids
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// -------------------------------------------------------------
+// 8. سیستم استوری‌ها (Stories)
+// -------------------------------------------------------------
+
+model Story {
+  id         String    @id @default(cuid())
+  title      String
+  mediaUrl   String
+  mediaType  String    @default("IMAGE") // IMAGE, VIDEO
+  linkUrl    String?   // لینک محصول یا خودرو
+  expiresAt  DateTime?
+  isActive   Boolean   @default(true)
+  orderIndex Int       @default(0)
+  createdAt  DateTime  @default(now())
+}
+
+// -------------------------------------------------------------
+// 9. نظرات و بازخوردها (Reviews)
+// -------------------------------------------------------------
+
+model Review {
+  id                 String   @id @default(cuid())
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId             String?
+  user               User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorName         String?
+  rating             Int      @default(5)
+  comment            String
+  isVerifiedCustomer Boolean  @default(false) // برچسب مشتری تایید شده
+  isApproved         Boolean  @default(true) // تایید ادمین
+  createdAt          DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// 10. علاقه‌مندی‌ها و اعلان‌ها (Favorites & Notifications)
+// -------------------------------------------------------------
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  type      String   @default("SYSTEM") // ORDER, MESSAGE, COMPATIBLE_PRODUCT, SYSTEM
+  createdAt DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// 11. تنظیمات داینامیک، شبکه‌ها، ساعات کاری و شعب (CMS)
+// -------------------------------------------------------------
+
+model SiteSetting {
+  id             String   @id @default("singleton")
+  siteName       String   @default("پلتفرم تخصصی آبشن خودرو")
+  siteTagline    String   @default("طراحی، مهندسی و تجهیز آبشن‌های فابریک و پیشرفته")
+  logo           String?
+  phone          String   @default("021-88888888")
+  email          String   @default("info@caroption.ir")
+  address        String   @default("تهران، خیابان شریعتی، مجتمع تخصصی خودرو")
+  mapLat         Float?   @default(35.7219)
+  mapLng         Float?   @default(51.4056)
+  heroTitle      String   @default("تجهیز هوشمند و مهندسی آبشن‌های تخصصی خودرو")
+  heroSubtitle   String   @default("مشاوره فنی، انتخاب اختصاصی بر اساس مدل و سال خودرو، نصب با استاندارد فابریک")
+  defaultTheme   String   @default("hybrid") // hybrid, dark, light
+  updatedAt      DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String   // INSTAGRAM, TELEGRAM, EITAA, RUBIKA, WHATSAPP
+  title     String
+  url       String
+  username  String?
+  icon      String?
+  isActive  Boolean  @default(true)
+  orderIndex Int     @default(0)
+}
+
+model WorkingHours {
+  id        String   @id @default(cuid())
+  dayOfWeek Int      // 0 = شنبه, 1 = یکشنبه, ... 6 = جمعه
+  dayName   String   // شنبه, یکشنبه, ...
+  openTime  String   // "09:00"
+  closeTime String   // "20:00"
+  isOpen    Boolean  @default(true)
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  mapUrl    String?
+  services  String?
+  isActive  Boolean  @default(true)
+}
+
+model ChatbotFAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  keywords  String   // Comma separated keywords
+  category  String   @default("GENERAL") // GENERAL, COMPATIBILITY, INSTALLATION, ORDER
+  orderIndex Int     @default(0)
+}

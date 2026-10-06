@@ -1,0 +1,20 @@
+{
+  "name": "Car Option | پلتفرم تخصصی آپشن خودرو",
+  "short_name": "Car Option",
+  "description": "مرکز تخصصی و جامع معرفی، استعلام سازگاری و رزرو نوبت نصب آپشن فابریک خودروهای لوکس و وارداتی",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["business", "automotive", "shopping"],
+  "lang": "fa-IR",
+  "dir": "rtl"
+}
